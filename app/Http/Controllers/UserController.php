@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,7 +36,7 @@ class UserController extends Controller
 
         $user = User::create(array_merge($request->validated(), [
             'password' => bcrypt($request->input('password')),
-            'role' => 3,
+            'role' => 1,
             'profile_picture' => url('/') .'/images/'. $imageName
         ]));
 
@@ -65,7 +66,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $usersResource = UserResource::collection(User::all());
+        $usersResource = UserResource::collection(User::with('transactions')->get());
         return json_encode( $usersResource, 200);
     }
 
@@ -80,21 +81,22 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        if($request->has('profile_picture')) {
-            $imageName = time().'.'.$request->profile_picture->extension();  
-            $request->profile_picture->move(public_path('images'), $imageName);
-            $user = User::create(array_merge($request->validated(), [
-                'password' => bcrypt($request->input('password')),
-                'profile_picture' => url('/') .'/images/'. $imageName
-            ]));
-            
-        } else {
-            $user = User::create(array_merge($request->validated(), [
-                'password' => bcrypt($request->input('password'))
-            ]));
-        }
+        $imageName = time().'.'.$request->file('profile_picture')->extension();  
+        $request->file('profile_picture')->move(public_path('images'), $imageName);
+
+        $user = User::create(array_merge($request->validated(), [
+            'password' => bcrypt($request->input('password')),
+            'profile_picture' => url('/') .'/images/'. $imageName
+        ]));
+
+        $email = $request->input('email');
+        $name = $request->input('first_name') . " " . $request->input('last_name');
+        
+        $token = $user->createToken('gabay-guru');
+        $user['token'] = $token->plainTextToken;
+
         $userResource = new UserResource($user);
         return json_encode( $userResource, 200);
     }
@@ -120,9 +122,8 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user = User::findOrFail($id);
         $photoPath = $user->profile_picture;
         $password = $user->password;
     
@@ -143,7 +144,6 @@ class UserController extends Controller
         $user->save();
     
         $userResource = new UserResource($user);
-        // return redirect()->route('Admin.Accounts-Dashboard')->with('message', 'Inventory item updated successfully.');
         return json_encode( $userResource, 200);
 
     }

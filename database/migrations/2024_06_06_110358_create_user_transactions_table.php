@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->decimal('amount', 8, 2);
             $table->string('description');
-            $table->decimal('balance', 8, 2);
+            $table->decimal('old_balance', 8, 2);
+            $table->decimal('new_balance', 8, 2);
+            
             $table->timestamps();
         });
     }

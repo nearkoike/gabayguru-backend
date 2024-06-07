@@ -24,8 +24,8 @@ class UpdateUserRequest extends FormRequest
         return [
             'first_name'        => ['sometimes'],
             'last_name'         => ['sometimes'],
-            'username'          => ['sometimes'],
-            'email'             => ['sometimes', 'email'],
+            'username'          => 'sometimes|unique:users,username,'. $this->user->id,
+            'email'             => 'sometimes|unique:users,email,'.$this->user->id,
             'password'          => ['sometimes'],
             'contact_number'    => ['sometimes'],
             'date_of_birth'     => ['sometimes', 'date'],

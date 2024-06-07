@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserTransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function ()
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     Route::resources([
         'users' => UserController::class,
+        'user-transactions' => UserTransactionController::class,
     ]);
 });
 
