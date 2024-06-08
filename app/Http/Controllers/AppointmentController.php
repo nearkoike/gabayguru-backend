@@ -9,6 +9,7 @@ use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
 use App\Models\User;
 use App\Models\UserTransaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -40,6 +41,33 @@ class AppointmentController extends Controller
         $mentor = User::find($request->mentor_id);
         if($student->wallet < $mentor->rate) {
             return response()->json("Insufficient balance, please reload your e-wallet", 400);
+        }
+        if($mentor->mentor_appointments->where([
+            'date' => Carbon::parse($request->date)])
+            ->first()){
+            return response()->json("Schedule already taken", 400);
+        }
+        $matched = 0;
+        foreach ($mentor->schedules as $schedule) {
+            $requestDate = Carbon::parse($request->date);
+            $dayName = $requestDate->dayName; 
+            if ($dayName == $schedule->day){
+                $time = $requestDate->toTimeString();
+                $parseTime = Carbon::parse($time);
+                $from = Carbon::parse($schedule->from);
+                $to = Carbon::parse($schedule->to);
+                
+                $hit = Carbon::createFromTimeString($parseTime);
+                $start = Carbon::createFromTimeString($from);
+                $end = Carbon::createFromTimeString($to);
+
+                if ($hit->between($start, $end)) {
+                    $matched++;
+                }
+            }
+        }
+        if ($matched == 0) {
+            return json_encode ("Invalid Schedule");
         }
 
         // add validation for available schedule

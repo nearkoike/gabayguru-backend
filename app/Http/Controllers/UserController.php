@@ -66,7 +66,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $usersResource = UserResource::collection(User::with(['transactions', 'student_appointments', 'mentor_appointments'])->get());
+        $usersResource = UserResource::collection(User::with(['schedules', 'transactions', 'student_appointments', 'mentor_appointments'])->get());
         return json_encode( $usersResource, 200);
     }
 

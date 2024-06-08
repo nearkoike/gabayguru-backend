@@ -31,7 +31,7 @@ class StoreUserRequest extends FormRequest
             'date_of_birth'     => ['required', 'date'],
             'profile_picture'   => ['image', 'mimes:jpeg,png,jpg,gif,svg|max:2048'],
             'role'              => ['sometimes'],
-            'rate'              => ['P', 'numeric'],
+            'rate'              => ['sometimes', 'numeric'],
             'wallet'            => ['sometimes', 'numeric'],
         ];
     }

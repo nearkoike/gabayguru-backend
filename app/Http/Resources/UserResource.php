@@ -28,6 +28,7 @@ class UserResource extends JsonResource
             'rate'                  => $this->rate,
             'wallet'                => $this->wallet,
             'transactions'          => UserTransactionResource::collection($this->whenLoaded('transactions')),
+            'schedules'             => ScheduleResource::collection($this->whenLoaded('schedules')),
             'student_appointments'  => AppointmentResource::collection($this->whenLoaded('student_appointments')),
             'mentor_appointments'   => AppointmentResource::collection($this->whenLoaded('mentor_appointments')),
             'created_at'            => (string) $this->created_at,
