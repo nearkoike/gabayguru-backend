@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\ClassController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserTransactionController;
@@ -30,6 +32,8 @@ Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function ()
         'user-transactions' => UserTransactionController::class,
         'appointments' => AppointmentController::class,
         'schedules' => ScheduleController::class,
+        'classes' => ClassController::class,
+        'reviews' => ReviewController::class,
     ]);
 });
 

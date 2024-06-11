@@ -18,4 +18,8 @@ class Appointment extends Model
     public function student() {
         return $this->belongsTo(User::class, 'student_id');
     }
+
+    public function class() {
+        return $this->hasOne(Classes::class);
+    }
 }
