@@ -31,6 +31,8 @@ class UserResource extends JsonResource
             'schedules'             => ScheduleResource::collection($this->whenLoaded('schedules')),
             'student_appointments'  => AppointmentResource::collection($this->whenLoaded('student_appointments')),
             'mentor_appointments'   => AppointmentResource::collection($this->whenLoaded('mentor_appointments')),
+            'support_tickets'       => TicketResource::collection($this->whenLoaded('support_tickets')),
+            'student_tickets'       => TicketResource::collection($this->whenLoaded('student_tickets')),
             'created_at'            => (string) $this->created_at,
             'created_at_text'       => Carbon::parse($this->created_at)->format('M d, Y'),
             'updated_at'            => (string) $this->created_at,

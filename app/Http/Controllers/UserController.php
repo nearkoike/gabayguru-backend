@@ -66,7 +66,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        $usersResource = UserResource::collection(User::with(['schedules', 'transactions', 'student_appointments', 'mentor_appointments'])->get());
+        $usersResource = UserResource::collection(User::with([
+            'support_tickets', 
+            'student_tickets', 
+            'schedules', 
+            'transactions', 
+            'student_appointments', 
+            'mentor_appointments'
+        ])->get());
         return json_encode( $usersResource, 200);
     }
 
@@ -97,7 +104,16 @@ class UserController extends Controller
         $token = $user->createToken('gabay-guru');
         $user['token'] = $token->plainTextToken;
 
-        $userResource = new UserResource($user);
+        $userRelationship = User::with([
+            'support_tickets', 
+            'student_tickets', 
+            'schedules', 
+            'transactions', 
+            'student_appointments', 
+            'mentor_appointments'
+        ])->find($user->id);
+        
+        $userResource = new UserResource($userRelationship);
         return json_encode( $userResource, 200);
     }
 
@@ -143,7 +159,16 @@ class UserController extends Controller
         ]));
         $user->save();
     
-        $userResource = new UserResource($user);
+        $userRelationship = User::with([
+            'support_tickets', 
+            'student_tickets', 
+            'schedules', 
+            'transactions', 
+            'student_appointments', 
+            'mentor_appointments'
+        ])->find($user->id);
+
+        $userResource = new UserResource($userRelationship);
         return json_encode( $userResource, 200);
 
     }

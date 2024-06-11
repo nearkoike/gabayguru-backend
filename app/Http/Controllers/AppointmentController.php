@@ -76,7 +76,8 @@ class AppointmentController extends Controller
             $appointment = Appointment::create(array_merge($request->validated(), [
                 'status' => "PENDING"
             ]));
-            $appointmentResource = new AppointmentResource($appointment);
+            $appointmentRelationship = Appointment::with(['mentor','student'])->find($appointment->id);
+            $appointmentResource = new AppointmentResource($appointmentRelationship);
             DB::commit();
             return json_encode( $appointmentResource, 200);
         } catch (\Exception $e) {
@@ -152,7 +153,8 @@ class AppointmentController extends Controller
         $appointment->status = $request->status;
         $appointment->save();
         DB::commit();
-        $appointmentResource = new AppointmentResource($appointment);
+        $appointmentRelationship = Appointment::with(['mentor','student'])->find($appointment->id);
+        $appointmentResource = new AppointmentResource($appointmentRelationship);
         return json_encode( $appointmentResource, 200);
     }
 

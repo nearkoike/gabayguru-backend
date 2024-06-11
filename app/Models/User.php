@@ -55,4 +55,12 @@ class User extends Authenticatable
     public function schedules() {
         return $this->hasMany(Schedule::class);
     }
+    
+    public function student_tickets() {
+        return $this->hasMany(Ticket::class, 'student_id');
+    }
+
+    public function support_tickets() {
+        return $this->hasMany(Ticket::class, 'support_id');
+    }    
 }

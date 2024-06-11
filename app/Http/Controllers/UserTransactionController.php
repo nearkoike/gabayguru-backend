@@ -49,7 +49,9 @@ class UserTransactionController extends Controller
             DB::rollback();
             return json_encode( $e, 400);
         }
-        $userTransactionResource = new UserTransactionResource($userTransaction);
+        $userTransactionRelationship = UserTransaction::with('user')->find($userTransaction->id);
+        
+        $userTransactionResource = new UserTransactionResource($userTransactionRelationship);
         return json_encode( $userTransactionResource, 200);
     }
 

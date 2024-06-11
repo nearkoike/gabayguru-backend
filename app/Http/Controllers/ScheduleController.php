@@ -37,7 +37,9 @@ class ScheduleController extends Controller
         DB::beginTransaction();
         try {
             $schedule = Schedule::create($request->validated());
-            $scheduleResource = new ScheduleResource($schedule);
+            $scheduleRelationship = Schedule::with(['user'])->find($schedule->id);
+            
+            $scheduleResource = new ScheduleResource($scheduleRelationship);
             DB::commit();
             return json_encode( $scheduleResource, 200);
         } catch (\Exception $e) {
@@ -70,7 +72,9 @@ class ScheduleController extends Controller
         $schedule->fill($request->validated());
         $schedule->save();
         
-        $scheduleResource = new ScheduleResource($schedule);
+        $scheduleRelationship = Schedule::with(['user'])->find($schedule->id);
+
+        $scheduleResource = new ScheduleResource($scheduleRelationship);
         return json_encode( $scheduleResource, 200);
     }
 

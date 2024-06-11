@@ -37,7 +37,11 @@ class ReviewController extends Controller
         DB::beginTransaction();
         try {
             $review = Review::create($request->validated());
-            $reviewResource = new ReviewResource($review);
+            
+            $reviewRelationship = Review::with(['class'])->find($review->id);
+
+            $reviewResource = new ReviewResource($reviewRelationship);
+            
             DB::commit();
             return json_encode( $reviewResource, 200);
         } catch (\Exception $e) {
@@ -70,7 +74,9 @@ class ReviewController extends Controller
         $review->fill($request->validated());
         $review->save();
         
-        $reviewResource = new ReviewResource($review);
+        $reviewRelationship = Review::with(['class'])->find($review->id);
+
+        $reviewResource = new ReviewResource($reviewRelationship);
         return json_encode( $reviewResource, 200);
     }
 

@@ -38,7 +38,8 @@ class ClassController extends Controller
         DB::beginTransaction();
         try {
             $class = Classes::create($request->validated());
-            $classResource = new ClassResource($class);
+            $classRelationship = Classes::with(['appointment'])->find($class->id);
+            $classResource = new ClassResource($classRelationship);
             DB::commit();
             return json_encode( $classResource, 200);
         } catch (\Exception $e) {
@@ -70,8 +71,10 @@ class ClassController extends Controller
     {
         $class->fill($request->validated());
         $class->save();
+
+        $classRelationship = Classes::with(['appointment'])->find($class->id);
         
-        $classResource = new ClassResource($class);
+        $classResource = new ClassResource($classRelationship);
         return json_encode( $classResource, 200);
     }
 
