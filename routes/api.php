@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ClassController;
+use App\Http\Controllers\PenaltyController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TicketController;
@@ -36,6 +37,7 @@ Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function ()
         'classes' => ClassController::class,
         'reviews' => ReviewController::class,
         'tickets' => TicketController::class,
+        'penalties' => PenaltyController::class,
     ]);
 });
 

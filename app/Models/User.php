@@ -62,5 +62,9 @@ class User extends Authenticatable
 
     public function support_tickets() {
         return $this->hasMany(Ticket::class, 'support_id');
-    }    
+    } 
+    
+    public function penalties() {
+        return $this->hasMany(Penalty::class);
+    }
 }

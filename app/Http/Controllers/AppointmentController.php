@@ -7,6 +7,7 @@ use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
+use App\Models\Classes;
 use App\Models\User;
 use App\Models\UserTransaction;
 use Carbon\Carbon;
@@ -111,6 +112,18 @@ class AppointmentController extends Controller
 
         if($appointment->status == Constants::APPOINTMENT_PENDING && $request->status == Constants::APPOINTMENT_APPROVED) {
             // Create Class
+
+            DB::beginTransaction();
+            try {
+                $class = Classes::create($request->validated());
+                $classRelationship = Classes::with(['appointment'])->find($class->id);
+                DB::commit();
+                return json_encode( $classRelationship, 200);
+            } catch (\Exception $e) {
+                DB::rollback();
+                return json_encode( $e, 400);
+            }
+
         } else if($appointment->status == Constants::APPOINTMENT_APPROVED && $request->status == Constants::APPOINTMENT_DONE) {
             // Continue Payment
             $student = User::find($appointment->student_id);

@@ -33,6 +33,7 @@ class UserResource extends JsonResource
             'mentor_appointments'   => AppointmentResource::collection($this->whenLoaded('mentor_appointments')),
             'support_tickets'       => TicketResource::collection($this->whenLoaded('support_tickets')),
             'student_tickets'       => TicketResource::collection($this->whenLoaded('student_tickets')),
+            'penalties'             => PenaltyResource::collection($this->whenLoaded('penalties')),
             'created_at'            => (string) $this->created_at,
             'created_at_text'       => Carbon::parse($this->created_at)->format('M d, Y'),
             'updated_at'            => (string) $this->created_at,

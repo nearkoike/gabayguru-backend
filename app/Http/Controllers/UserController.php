@@ -72,7 +72,8 @@ class UserController extends Controller
             'schedules', 
             'transactions', 
             'student_appointments', 
-            'mentor_appointments'
+            'mentor_appointments',
+            'penalties'
         ])->get());
         return json_encode( $usersResource, 200);
     }
