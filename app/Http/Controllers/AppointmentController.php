@@ -21,7 +21,7 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointmentsResource = AppointmentResource::collection(Appointment::with(['mentor','student'])->get());
+        $appointmentsResource = AppointmentResource::collection(Appointment::with(['mentor','student','class'])->get());
         return json_encode( $appointmentsResource, 200);
     }
 
@@ -43,9 +43,8 @@ class AppointmentController extends Controller
         if($student->wallet < $mentor->rate) {
             return response()->json("Insufficient balance, please reload your e-wallet", 400);
         }
-        if($mentor->mentor_appointments->where([
-            'date' => Carbon::parse($request->date)])
-            ->first()){
+        $scheduleExists = $mentor->mentor_appointments->where('date', Carbon::parse($request->date))->first();
+        if($scheduleExists){
             return response()->json("Schedule already taken", 400);
         }
         $matched = 0;
@@ -112,17 +111,18 @@ class AppointmentController extends Controller
 
         if($appointment->status == Constants::APPOINTMENT_PENDING && $request->status == Constants::APPOINTMENT_APPROVED) {
             // Create Class
-
-            DB::beginTransaction();
-            try {
-                $class = Classes::create($request->validated());
-                $classRelationship = Classes::with(['appointment'])->find($class->id);
-                DB::commit();
-                return json_encode( $classRelationship, 200);
-            } catch (\Exception $e) {
-                DB::rollback();
-                return json_encode( $e, 400);
-            }
+            Classes::insert([
+                    'appointment_id' => $appointment->id,
+                    'name' => $appointment->mentor->first_name . " and " . $appointment->student->first_name . " Class", 
+                    'class_id' => "PLACEHOLDER",
+                    'start_time' => date('Y-m-d H:i:s'),
+                    'end_time' => date('Y-m-d H:i:s'),
+                    'end_time' => date('Y-m-d H:i:s'),
+                    'duration' => "1 Hour",
+                    'status' => Constants::APPOINTMENT_APPROVED,
+                    'created_at' =>  date('Y-m-d H:i:s'),
+                    'updated_at' =>  date('Y-m-d H:i:s')
+            ]);
 
         } else if($appointment->status == Constants::APPOINTMENT_APPROVED && $request->status == Constants::APPOINTMENT_DONE) {
             // Continue Payment
@@ -166,7 +166,7 @@ class AppointmentController extends Controller
         $appointment->status = $request->status;
         $appointment->save();
         DB::commit();
-        $appointmentRelationship = Appointment::with(['mentor','student'])->find($appointment->id);
+        $appointmentRelationship = Appointment::with(['mentor','student','class'])->find($appointment->id);
         $appointmentResource = new AppointmentResource($appointmentRelationship);
         return json_encode( $appointmentResource, 200);
     }
