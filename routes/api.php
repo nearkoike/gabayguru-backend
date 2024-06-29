@@ -42,7 +42,7 @@ Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function ()
         'tickets' => TicketController::class,
         'penalties' => PenaltyController::class,
     ]);
-    Route::resource('users', 'UserController')->except(['show', 'index']);
+    Route::resource('users', UserController::class)->except(['show', 'index']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
