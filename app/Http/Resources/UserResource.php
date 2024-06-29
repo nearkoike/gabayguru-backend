@@ -34,6 +34,7 @@ class UserResource extends JsonResource
             'support_tickets'       => TicketResource::collection($this->whenLoaded('support_tickets')),
             'student_tickets'       => TicketResource::collection($this->whenLoaded('student_tickets')),
             'penalties'             => PenaltyResource::collection($this->whenLoaded('penalties')),
+            'user_bio'              => new UserBioResource($this->whenLoaded('user_bio')),
             'created_at'            => (string) $this->created_at,
             'created_at_text'       => Carbon::parse($this->created_at)->format('M d, Y'),
             'updated_at'            => (string) $this->created_at,

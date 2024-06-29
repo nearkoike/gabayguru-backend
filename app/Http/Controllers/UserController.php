@@ -72,7 +72,8 @@ class UserController extends Controller
             'transactions',
             'student_appointments',
             'mentor_appointments',
-            'penalties'
+            'penalties',
+            'user_bio'
         ])->get());
         return json_encode($usersResource, 200);
     }
@@ -128,7 +129,9 @@ class UserController extends Controller
             'schedules',
             'transactions',
             'student_appointments',
-            'mentor_appointments'
+            'mentor_appointments',
+            'penalties',
+            'user_bio'
         ])->find($user->id);
 
         $userResource = new UserResource($userRelationship);
