@@ -22,9 +22,15 @@ class StoreUserTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'       => ['required', 'exists:users,id'],
-            'amount'        => ['required', 'numeric'],
-            'description'   => ['required', 'string'],
+            'user_id'           => ['required', 'exists:users,id'],
+            'amount'            => ['required', 'numeric'],
+            'description'       => ['required', 'string'],
+            'reference_number'  => ['nullable', 'string'],
+            'screenshot'        => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg|max:2048'],
+            'sender_name'       => ['nullable', 'string'],
+            'account_name'      => ['nullable', 'string'],
+            'account_number'    => ['nullable', 'string'],
+            'status'            => ['nullable', 'boolean'],
         ];
     }
 }

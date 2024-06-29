@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $guarded = [];
-    
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -39,32 +39,44 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    
-    public function transactions() {
+
+    public function user_bio()
+    {
+        return $this->hasOne(UserBio::class);
+    }
+
+    public function transactions()
+    {
         return $this->hasMany(UserTransaction::class);
     }
 
-    public function student_appointments() {
+    public function student_appointments()
+    {
         return $this->hasMany(Appointment::class, 'student_id');
     }
 
-    public function mentor_appointments() {
+    public function mentor_appointments()
+    {
         return $this->hasMany(Appointment::class, 'mentor_id');
-    }    
+    }
 
-    public function schedules() {
+    public function schedules()
+    {
         return $this->hasMany(Schedule::class);
     }
-    
-    public function student_tickets() {
+
+    public function student_tickets()
+    {
         return $this->hasMany(Ticket::class, 'student_id');
     }
 
-    public function support_tickets() {
+    public function support_tickets()
+    {
         return $this->hasMany(Ticket::class, 'support_id');
-    } 
-    
-    public function penalties() {
+    }
+
+    public function penalties()
+    {
         return $this->hasMany(Penalty::class);
     }
 }
