@@ -36,7 +36,6 @@ class UserController extends Controller
 
         $user = User::create(array_merge($request->validated(), [
             'password' => bcrypt($request->input('password')),
-            'role' => 1,
             'profile_picture' => url('/') . '/images/' . $imageName
         ]));
 
