@@ -34,20 +34,18 @@ class UserTransactionController extends Controller
     {
         DB::beginTransaction();
 
-        $imageName = time() . '.' . $request->file('screenshot')->extension();
-        $request->file('screenshot')->move(public_path('screenshots'), $imageName);
+        if ($request->has('screenshot')) {
+            $imageName = time() . '.' . $request->file('screenshot')->extension();
+            $request->file('screenshot')->move(public_path('screenshots'), $imageName);
+        }
 
         try {
-            $user = User::find($request->user_id);
-            $old_balance = $user->wallet;
-            $new_balance = $request->amount + $user->wallet;
             $userTransaction = UserTransaction::create(array_merge($request->validated(), [
-                'old_balance' => $old_balance,
-                'new_balance' => $new_balance,
-                'screenshot' => url('/') . '/images/' . $imageName
+                'old_balance' => 0,
+                'new_balance' => 0,
+                'screenshot' => $request->has('screenshot') ? url('/') . '/images/' . $imageName : null
             ]));
-            $user->wallet = $new_balance;
-            $user->save();
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
@@ -80,10 +78,23 @@ class UserTransactionController extends Controller
      */
     public function update(UserTransaction $userTransaction)
     {
+        DB::beginTransaction();
+
+        if ($userTransaction->status == 1) {
+            return json_encode("Transaction already approved", 500);
+        }
+        $user = User::find($userTransaction->user_id);
+        $old_balance = $user->wallet;
+        $new_balance = $userTransaction->amount + $user->wallet;
+        $userTransaction->old_balance = $old_balance;
+        $userTransaction->new_balance = $new_balance;
+        $user->wallet = $new_balance;
+        $user->save();
+
         $userTransaction->status = 1;
         $userTransaction->save();
 
-
+        DB::commit();
         $userTransactionRelationship = UserTransaction::with([
             'user'
         ])->find($userTransaction->id);
