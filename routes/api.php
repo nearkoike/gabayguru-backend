@@ -45,8 +45,6 @@ Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function ()
         'penalties' => PenaltyController::class,
     ]);
     Route::resource('users', UserController::class)->except(['show', 'index']);
-
-    Route::post('/register', [UserController::class, 'register'])->name('register');
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
