@@ -35,7 +35,7 @@ Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function ()
     Route::post('/user-transactions/for-processing', [UserTransactionController::class, 'for_processing']);
     Route::post('/appointments/search-class/{appointment_id}', [AppointmentController::class, 'search_class']);
     Route::resources([
-        // 'user-transactions' => UserTransactionController::class,
+        'user-transactions' => UserTransactionController::class,
         'user-bios' => UserBioController::class,
         'appointments' => AppointmentController::class,
         'schedules' => ScheduleController::class,
