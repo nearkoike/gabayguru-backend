@@ -32,6 +32,7 @@ return new class extends Migration
             $table->dropColumn('sender_name');
             $table->dropColumn('account_name');
             $table->dropColumn('account_number');
+            $table->dropColumn('status');
         });
     }
 };

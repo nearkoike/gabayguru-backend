@@ -51,18 +51,28 @@ class UserBioController extends Controller
 
 
 
-    public function update(UpdateUserBioRequest $request)
+    public function update(UpdateUserBioRequest $request, UserBio $userBio)
     {
-        $resumeName = 'resume-' .  time() . '.' . $request->file('resume')->extension();
-        $request->file('resume')->move(public_path('files'), $resumeName);
+        $resumePath = $userBio->resume;
+        $portfolioPath = $userBio->portfolio;
+        if ($request->hasFile('resume')) {
+            $resumeName = 'resume-' .  time() . '.' . $request->file('resume')->extension();
+            $request->file('resume')->move(public_path('files'), $resumeName);
+            $resumePath = url('/images/' . $resumeName);
+        }
 
-        $portfolioName = 'portfolio-' .  time() . '.' . $request->file('portfolio')->extension();
-        $request->file('portfolio')->move(public_path('files'), $portfolioName);
+        if ($request->hasFile('portfolio')) {
+            $portfolioName = 'portfolio-' .  time() . '.' . $request->file('portfolio')->extension();
+            $request->file('portfolio')->move(public_path('files'), $portfolioName);
+            $portfolioPath = url('/images/' . $portfolioName);
+        }
 
-        $userBio = UserBio::create(array_merge($request->validated(), [
-            'resume' => url('/') . '/files/' . $resumeName,
-            'portfolio' => url('/') . '/files/' . $portfolioName,
+        $userBio->fill(array_merge($request->validated(), [
+            'resume' => $resumePath,
+            'portfolio' => $portfolioPath,
         ]));
+        $userBio->save();
+
         $userBioRelationship = UserBio::with([
             'user'
         ])->find($userBio->id);

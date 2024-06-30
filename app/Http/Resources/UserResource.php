@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Appointment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -15,6 +16,7 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $type = $this->role == 2 ? "mentor_id" : "student_id";
         return [
             'id'                    => $this->id,
             'first_name'            => $this->first_name,
@@ -31,9 +33,12 @@ class UserResource extends JsonResource
             'schedules'             => ScheduleResource::collection($this->whenLoaded('schedules')),
             'student_appointments'  => AppointmentResource::collection($this->whenLoaded('student_appointments')),
             'mentor_appointments'   => AppointmentResource::collection($this->whenLoaded('mentor_appointments')),
+            'latest_appointment'    => Appointment::where([$type => $this->id, 'status' => "APPROVED"])->orderBy('date', 'desc')->first(),
             'support_tickets'       => TicketResource::collection($this->whenLoaded('support_tickets')),
             'student_tickets'       => TicketResource::collection($this->whenLoaded('student_tickets')),
             'penalties'             => PenaltyResource::collection($this->whenLoaded('penalties')),
+            'classes'               => $this->classes,
+            'reviews'               => $this->reviews,
             'user_bio'              => new UserBioResource($this->whenLoaded('user_bio')),
             'created_at'            => (string) $this->created_at,
             'created_at_text'       => Carbon::parse($this->created_at)->format('M d, Y'),

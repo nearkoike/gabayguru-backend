@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserTransactionRequest;
+use App\Http\Requests\UpdateUserTransactionRequest;
 use App\Http\Resources\UserTransactionResource;
 use App\Models\User;
 use App\Models\UserTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserTransactionController extends Controller
 {
@@ -17,6 +19,24 @@ class UserTransactionController extends Controller
     public function index()
     {
         $userTransactionResource = UserTransactionResource::collection(UserTransaction::with('user')->get());
+        return json_encode($userTransactionResource, 200);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function for_processing(Request $request)
+    {
+        $userTransactionResource = UserTransactionResource::collection(UserTransaction::with('user')->where(
+            function (Builder $query) use ($request) {
+                if ($request->has('user_id')) {
+                    $query->where('user_id', $request->user_id);
+                }
+                if ($request->has('processed')) {
+                    $query->where('processed', $request->processed);
+                }
+            }
+        )->get());
         return json_encode($userTransactionResource, 200);
     }
 
@@ -76,24 +96,27 @@ class UserTransactionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserTransaction $userTransaction)
+    public function update(UpdateUserTransactionRequest $request, UserTransaction $userTransaction)
     {
         DB::beginTransaction();
 
-        if ($userTransaction->status == 1) {
-            return json_encode("Transaction already approved", 500);
+        if ($request->status == 1 && $userTransaction->processed == 0) {
+            $user = User::find($userTransaction->user_id);
+            $old_balance = $user->wallet;
+            $new_balance = $userTransaction->amount + $user->wallet;
+            $userTransaction->old_balance = $old_balance;
+            $userTransaction->new_balance = $new_balance;
+            $user->wallet = $new_balance;
+            $user->save();
+
+            $userTransaction->status = 1;
+            $userTransaction->processed = 1;
+            $userTransaction->save();
+        } else {
+            $userTransaction->status = 0;
+            $userTransaction->processed = 1;
+            $userTransaction->save();
         }
-        $user = User::find($userTransaction->user_id);
-        $old_balance = $user->wallet;
-        $new_balance = $userTransaction->amount + $user->wallet;
-        $userTransaction->old_balance = $old_balance;
-        $userTransaction->new_balance = $new_balance;
-        $user->wallet = $new_balance;
-        $user->save();
-
-        $userTransaction->status = 1;
-        $userTransaction->save();
-
         DB::commit();
         $userTransactionRelationship = UserTransaction::with([
             'user'
