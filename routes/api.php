@@ -28,6 +28,10 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::post('/register', [UserController::class, 'register'])->name('register');
+    Route::get('/google-link', [ClassController::class, 'getGoogleLink'])->name('getGoogleLink');
+    Route::get('/google-callback', [ClassController::class, 'getGoogleCode']); // get code
+    Route::post('/google-token', [ClassController::class, 'getGoogleToken']); // get code
+    Route::post('/google-meet', [ClassController::class, 'createMeeting']); // get code
 });
 
 Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function () {
