@@ -126,7 +126,7 @@ class AppointmentController extends Controller
                 [
                     'user_id' => $appointment->student_id,
                     'amount' => -$appointment->amount,
-                    'description' => Constants::APPOINTMENT_DONE_STUDENT,
+                    'description' => Constants::APPOINTMENT_APPROVED_STUDENT,
                     'old_balance' => $old_student_balance,
                     'new_balance' => $new_student_balance,
                     'reference_number' => 'AUTO_DEDUCT_FROM_SYSTEM',
@@ -192,7 +192,7 @@ class AppointmentController extends Controller
                 [
                     'user_id' => $appointment->student_id,
                     'amount' => -$appointment->amount,
-                    'description' => Constants::APPOINTMENT_DONE_STUDENT,
+                    'description' => Constants::APPOINTMENT_FAILED_STUDENT,
                     'old_balance' => $old_student_balance,
                     'new_balance' => $new_student_balance,
                     'reference_number' => 'AUTO_DEDUCT_FROM_SYSTEM',
