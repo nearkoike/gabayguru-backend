@@ -33,7 +33,7 @@ class UserResource extends JsonResource
             'schedules'             => ScheduleResource::collection($this->whenLoaded('schedules')),
             'student_appointments'  => AppointmentResource::collection($this->whenLoaded('student_appointments')),
             'mentor_appointments'   => AppointmentResource::collection($this->whenLoaded('mentor_appointments')),
-            'latest_appointment'    => Appointment::where([$type => $this->id, 'status' => "APPROVED"])->orderBy('date', 'desc')->first(),
+            'latest_appointment'    => Appointment::where([$type => $this->id, 'status' => "APPROVED"])->where('date', '>=', 'NOW()')->orderBy('date', 'asc')->first(),
             'support_tickets'       => TicketResource::collection($this->whenLoaded('support_tickets')),
             'student_tickets'       => TicketResource::collection($this->whenLoaded('student_tickets')),
             'penalties'             => PenaltyResource::collection($this->whenLoaded('penalties')),
