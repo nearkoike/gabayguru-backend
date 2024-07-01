@@ -95,7 +95,7 @@ class ClassController extends Controller
 
     public function getGoogleCode()
     {
-        return $_GET['code'];
+        return json_encode($_GET['code'], 200);
     }
 
     public function createMeeting(Request $request)
@@ -145,7 +145,8 @@ class ClassController extends Controller
 
         // Print the join URL for the Google Meet
         $meetLink = $event->getHangoutLink();
-        echo "Google Meet Link: " . $meetLink;
+
+        return json_encode($meetLink, 200);
     }
 
     public function getGoogleLink()
@@ -167,8 +168,10 @@ class ClassController extends Controller
         if (!isset($_GET['code'])) {
             $auth_url = $client->createAuthUrl();
             $link = filter_var($auth_url, FILTER_SANITIZE_URL);
-            return $link;
+            return json_encode($link, 200);
         }
+
+        return json_encode("Error: Unable to retrieve link", 500);
         // else {
         //     $client->fetchAccessTokenWithAuthCode($_GET['code']);
         //     $_SESSION['access_token'] = $client->getAccessToken();
@@ -202,10 +205,12 @@ class ClassController extends Controller
         if (isset($data['access_token'])) {
             // Access token obtained successfully
             $access_token = $data['access_token'];
-            echo "Access Token: " . $access_token;
+
+            return json_encode($access_token, 200);
         } else {
             // Error handling if token retrieval fails
-            echo "Error: Unable to retrieve access token";
+
+            return json_encode("Error: Unable to retrieve access token", 500);
         }
     }
 }
