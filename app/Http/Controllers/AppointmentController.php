@@ -118,26 +118,9 @@ class AppointmentController extends Controller
 
         if ($appointment->status == Constants::APPOINTMENT_PENDING && $request->status == Constants::APPOINTMENT_APPROVED) {
             // Create Class
-            Classes::insert([
-                'appointment_id' => $appointment->id,
-                'name' => $appointment->mentor->first_name . " and " . $appointment->student->first_name . " Class",
-                'class_id' => "PLACEHOLDER",
-                'start_time' => date('Y-m-d H:i:s'),
-                'end_time' => date('Y-m-d H:i:s'),
-                'end_time' => date('Y-m-d H:i:s'),
-                'duration' => "1 Hour",
-                'status' => Constants::APPOINTMENT_APPROVED,
-                'created_at' =>  date('Y-m-d H:i:s'),
-                'updated_at' =>  date('Y-m-d H:i:s')
-            ]);
-        } else if ($appointment->status == Constants::APPOINTMENT_APPROVED && $request->status == Constants::APPOINTMENT_DONE) {
-            // Continue Payment
             $student = User::find($appointment->student_id);
-            $mentor = User::find($appointment->mentor_id);
             $old_student_balance = $student->wallet;
             $new_student_balance = -$appointment->amount + $student->wallet;
-            $old_mentor_balance = $mentor->wallet;
-            $new_mentor_balance = $appointment->amount + $mentor->wallet;
 
             UserTransaction::insert([
                 [
@@ -156,6 +139,29 @@ class AppointmentController extends Controller
                     'created_at' =>  date('Y-m-d H:i:s'),
                     'updated_at' =>  date('Y-m-d H:i:s')
                 ],
+            ]);
+
+            $student->wallet = $new_student_balance;
+            $student->save();
+            Classes::insert([
+                'appointment_id' => $appointment->id,
+                'name' => $appointment->mentor->first_name . " and " . $appointment->student->first_name . " Class",
+                'class_id' => "PLACEHOLDER",
+                'start_time' => date('Y-m-d H:i:s'),
+                'end_time' => date('Y-m-d H:i:s'),
+                'end_time' => date('Y-m-d H:i:s'),
+                'duration' => "1 Hour",
+                'status' => Constants::APPOINTMENT_APPROVED,
+                'created_at' =>  date('Y-m-d H:i:s'),
+                'updated_at' =>  date('Y-m-d H:i:s')
+            ]);
+        } else if ($appointment->status == Constants::APPOINTMENT_APPROVED && $request->status == Constants::APPOINTMENT_DONE) {
+            // Continue Payment
+            $mentor = User::find($appointment->mentor_id);
+            $old_mentor_balance = $mentor->wallet;
+            $new_mentor_balance = $appointment->amount + $mentor->wallet;
+
+            UserTransaction::insert([
                 [
                     'user_id' => $appointment->mentor_id,
                     'amount' => $appointment->amount,
@@ -173,12 +179,36 @@ class AppointmentController extends Controller
                     'updated_at' =>  date('Y-m-d H:i:s')
                 ]
             ]);
-            $student->wallet = $new_student_balance;
-            $student->save();
             $mentor->wallet = $new_mentor_balance;
             $mentor->save();
         } else if ($appointment->status == Constants::APPOINTMENT_APPROVED && $request->status == Constants::APPOINTMENT_FAILED) {
             // Void Payment
+
+            $student = User::find($appointment->student_id);
+            $old_student_balance = $student->wallet;
+            $new_student_balance = $appointment->amount + $student->wallet;
+
+            UserTransaction::insert([
+                [
+                    'user_id' => $appointment->student_id,
+                    'amount' => -$appointment->amount,
+                    'description' => Constants::APPOINTMENT_DONE_STUDENT,
+                    'old_balance' => $old_student_balance,
+                    'new_balance' => $new_student_balance,
+                    'reference_number' => 'AUTO_DEDUCT_FROM_SYSTEM',
+                    'screenshot' => null,
+                    'sender_name' => null,
+                    'account_name' => null,
+                    'account_number' => null,
+                    'status' => 1,
+                    'processed' => 1,
+                    'created_at' =>  date('Y-m-d H:i:s'),
+                    'updated_at' =>  date('Y-m-d H:i:s')
+                ],
+            ]);
+
+            $student->wallet = $new_student_balance;
+            $student->save();
         } else {
             return json_encode("Something went wrong. If issue persists, contact administrator", 400);
         }

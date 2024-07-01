@@ -63,7 +63,7 @@ class UserTransactionController extends Controller
             $userTransaction = UserTransaction::create(array_merge($request->validated(), [
                 'old_balance' => 0,
                 'new_balance' => 0,
-                'screenshot' => $request->has('screenshot') ? url('/') . '/images/' . $imageName : null
+                'screenshot' => $request->has('screenshot') ? url('/') . '/screenshot/' . $imageName : null
             ]));
 
             DB::commit();
