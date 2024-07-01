@@ -95,13 +95,11 @@ class ClassController extends Controller
 
     public function getGoogleCode()
     {
-        header('Access-Control-Allow-Origin: *');
         return $_GET['code'];
     }
 
     public function createMeeting(Request $request)
     {
-        header('Access-Control-Allow-Origin: *');
         $client_id = '1001131123526-u0ldfuqhk22t84t5o6ro2gnlk6lifhbh.apps.googleusercontent.com';
         $client_secret = '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';
         $redirect_uri = 'http://127.0.0.1:8000/api/v1/google-callback'; // Must match the redirect URI configured in your Google Cloud Console
@@ -152,7 +150,6 @@ class ClassController extends Controller
 
     public function getGoogleLink()
     {
-        header('Access-Control-Allow-Origin: *');
         $serviceAccountFilePath = base_path('gabay-guru.json'); // Path to your downloaded service account JSON key file
         // $redirect_uri = "https://oauth2.googleapis.com/token";
         // Initialize the Google Client
@@ -182,7 +179,6 @@ class ClassController extends Controller
 
     public function getGoogleToken(Request $request)
     {
-        header('Access-Control-Allow-Origin: *');
         $client_id = '1001131123526-u0ldfuqhk22t84t5o6ro2gnlk6lifhbh.apps.googleusercontent.com';
         $client_secret = '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';
         $authorization_code = $request->code;
