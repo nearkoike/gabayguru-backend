@@ -42,19 +42,17 @@ class ClassController extends Controller
      */
     public function store(StoreClassRequest $request)
     {
-        $this->getGoogleLink();
-
-        // DB::beginTransaction();
-        // try {
-        //     $class = Classes::create($request->validated());
-        //     $classRelationship = Classes::with(['appointment'])->find($class->id);
-        //     $classResource = new ClassResource($classRelationship);
-        //     DB::commit();
-        //     return json_encode($classResource, 200);
-        // } catch (\Exception $e) {
-        //     DB::rollback();
-        //     return json_encode($e, 400);
-        // }
+        DB::beginTransaction();
+        try {
+            $class = Classes::create($request->validated());
+            $classRelationship = Classes::with(['appointment'])->find($class->id);
+            $classResource = new ClassResource($classRelationship);
+            DB::commit();
+            return json_encode($classResource, 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return json_encode($e, 400);
+        }
     }
 
     /**
