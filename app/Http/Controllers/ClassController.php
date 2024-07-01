@@ -167,7 +167,7 @@ class ClassController extends Controller
         if (!isset($_GET['code'])) {
             $auth_url = $client->createAuthUrl();
             $link = filter_var($auth_url, FILTER_SANITIZE_URL);
-            return Redirect::to($link);
+            return $link;
         }
         // else {
         //     $client->fetchAccessTokenWithAuthCode($_GET['code']);
