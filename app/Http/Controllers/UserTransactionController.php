@@ -56,7 +56,7 @@ class UserTransactionController extends Controller
 
         if ($request->has('screenshot')) {
             $imageName = time() . '.' . $request->file('screenshot')->extension();
-            $request->file('screenshot')->move(public_path('screenshots'), $imageName);
+            $request->file('screenshot')->move(public_path('screenshot'), $imageName);
         }
 
         try {
