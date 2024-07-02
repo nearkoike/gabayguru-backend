@@ -95,7 +95,77 @@ class ClassController extends Controller
 
     public function getGoogleCode()
     {
-        return json_encode($_GET['code'], 200);
+
+        $client_id = '1001131123526-u0ldfuqhk22t84t5o6ro2gnlk6lifhbh.apps.googleusercontent.com';
+        $client_secret = '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';
+        $authorization_code = $_GET['code'];
+        $redirect_uri = 'http://127.0.0.1:8000/api/v1/google-callback'; // Must match the redirect URI configured in your Google Cloud Console
+
+        $url = 'https://oauth2.googleapis.com/token';
+
+        $client = new Client();
+        $response = $client->request('POST', $url, [
+            'form_params' => [
+                'code' => $authorization_code,
+                'client_id' => $client_id,
+                'client_secret' => $client_secret,
+                'redirect_uri' => $redirect_uri,
+                'grant_type' => 'authorization_code',
+            ],
+        ]);
+        $body = $response->getBody();
+        $data = json_decode($body, true);
+
+        if (isset($data['access_token'])) {
+            // Access token obtained successfully
+            $access_token = $data['access_token'];
+            $client = new Google_Client();
+            $client->setClientId($client_id);
+            $client->setClientSecret($client_secret);
+            $client->setRedirectUri($redirect_uri);
+            $client->addScope('https://www.googleapis.com/auth/calendar'); // Scope for Google Calendar API
+
+            // Set access token
+            $client->setAccessToken($access_token);
+
+            // Create a Google Calendar service object
+            $service = new Google_Service_Calendar($client);
+
+            // Define event details
+            $event = new Google_Service_Calendar_Event([
+                'summary' => 'Meeting Title',
+                'description' => 'Meeting description',
+                'start' => [
+                    'dateTime' => '2024-07-15T09:00:00-07:00', // Adjust start time as necessary
+                    'timeZone' => 'America/Los_Angeles',
+                ],
+                'end' => [
+                    'dateTime' => '2024-07-15T10:00:00-07:00', // Adjust end time as necessary
+                    'timeZone' => 'America/Los_Angeles',
+                ],
+                'conferenceData' => [
+                    'createRequest' => [
+                        'requestId' => uniqid(),
+                        'conferenceSolutionKey' => [
+                            'type' => 'hangoutsMeet'
+                        ]
+                    ]
+                ]
+            ]);
+
+            // Insert the event
+            $calendarId = 'primary'; // Use 'primary' for the primary calendar of the authenticated user
+            $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
+
+            // Print the join URL for the Google Meet
+            $meetLink = $event->getHangoutLink();
+
+            return json_encode($meetLink, 200);
+        } else {
+            // Error handling if token retrieval fails
+
+            return json_encode("Error: Unable to retrieve access token", 500);
+        }
     }
 
     public function createMeeting(Request $request)
