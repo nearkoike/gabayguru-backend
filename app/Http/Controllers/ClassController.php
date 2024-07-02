@@ -203,6 +203,8 @@ class ClassController extends Controller
                 'updated_at' =>  date('Y-m-d H:i:s')
             ]);
 
+            $appointment->status = Constants::APPOINTMENT_APPROVED;
+            $appointment->save();
             return Redirect::to("http://localhost:3000/session-request");
         } else {
             // Error handling if token retrieval fails
