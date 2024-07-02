@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants;
 use App\Http\Requests\ClassRequest;
 use App\Http\Requests\StoreClassRequest;
 use App\Http\Requests\UpdateClassRequest;
 use App\Http\Resources\ClassResource;
+use App\Models\Appointment;
 use App\Models\Classes;
 use App\Models\Schedule;
+use App\Models\User;
+use App\Models\UserTransaction;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +20,7 @@ use Google\Service\Calendar as Google_Service_Calendar;
 use Google\Service\Calendar\Event as Google_Service_Calendar_Event;
 use Google\Service\Oauth2;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 
 class ClassController extends Controller
@@ -158,9 +163,47 @@ class ClassController extends Controller
             $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
 
             // Print the join URL for the Google Meet
-            $meetLink = $event->getHangoutLink();
+            $meetLink = $event->getHangoutLink();;
+            $appointment = Appointment::find(Cache::get('last_appointment'));
+            $student = User::find($appointment->student_id);
+            $old_student_balance = $student->wallet;
+            $new_student_balance = -$appointment->amount + $student->wallet;
 
-            return json_encode($meetLink, 200);
+            UserTransaction::insert([
+                [
+                    'user_id' => $appointment->student_id,
+                    'amount' => -$appointment->amount,
+                    'description' => Constants::APPOINTMENT_APPROVED_STUDENT,
+                    'old_balance' => $old_student_balance,
+                    'new_balance' => $new_student_balance,
+                    'reference_number' => 'AUTO_DEDUCT_FROM_SYSTEM',
+                    'screenshot' => null,
+                    'sender_name' => null,
+                    'account_name' => null,
+                    'account_number' => null,
+                    'status' => 1,
+                    'processed' => 1,
+                    'created_at' =>  date('Y-m-d H:i:s'),
+                    'updated_at' =>  date('Y-m-d H:i:s')
+                ],
+            ]);
+
+            $student->wallet = $new_student_balance;
+            $student->save();
+            Classes::insert([
+                'appointment_id' => $appointment->id,
+                'name' => $appointment->mentor->first_name . " and " . $appointment->student->first_name . " Class",
+                'class_id' => $meetLink,
+                'start_time' => date('Y-m-d H:i:s'),
+                'end_time' => date('Y-m-d H:i:s'),
+                'end_time' => date('Y-m-d H:i:s'),
+                'duration' => "1 Hour",
+                'status' => Constants::APPOINTMENT_APPROVED,
+                'created_at' =>  date('Y-m-d H:i:s'),
+                'updated_at' =>  date('Y-m-d H:i:s')
+            ]);
+
+            return Redirect::to("http://localhost:3000/session-request");
         } else {
             // Error handling if token retrieval fails
 
