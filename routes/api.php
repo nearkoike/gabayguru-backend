@@ -9,6 +9,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserBioController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserTransactionController;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,8 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::get('/google-link', [ClassController::class, 'getGoogleLink'])->name('getGoogleLink');
     Route::get('/google-callback', [ClassController::class, 'getGoogleCode']); // get code
     Route::post('/google-token', [ClassController::class, 'getGoogleToken']); // get code
+    Route::post('/cache-appointment/{appointment_id}', [AppointmentController::class, 'cacheAppointment']); // get code
+    Route::get('/get-cache-appointment', [AppointmentController::class, 'getCacheAppointment']); // get code
     Route::post('/google-meet', [ClassController::class, 'createMeeting']); // get code
 });
 

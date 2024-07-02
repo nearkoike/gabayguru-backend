@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\UserTransaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
@@ -30,6 +31,17 @@ class AppointmentController extends Controller
     {
         $classResource = new ClassResource(Classes::with(['appointment'])->where('appointment_id', $appointment_id)->firstOrFail());
         return json_encode($classResource, 200);
+    }
+
+    public function cacheAppointment($appointment_id)
+    {
+        Cache::put('last_appointment', $appointment_id, now()->addMinutes(1));
+        return json_encode("Success", 200);
+    }
+    public function getCacheAppointment()
+    {
+        $last_appointment_id = Cache::get('last_appointment');
+        return json_encode($last_appointment_id, 200);
     }
 
     /**
