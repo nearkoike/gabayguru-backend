@@ -60,6 +60,16 @@ class User extends Authenticatable
         return $this->hasMany(Appointment::class, 'mentor_id');
     }
 
+    public function sender_receipts()
+    {
+        return $this->hasMany(Receipt::class, 'sender_id');
+    }
+
+    public function receiver_receipts()
+    {
+        return $this->hasMany(Receipt::class, 'receiver_id');
+    }
+
     public function schedules()
     {
         return $this->hasMany(Schedule::class);

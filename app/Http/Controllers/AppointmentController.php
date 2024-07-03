@@ -9,6 +9,7 @@ use App\Http\Resources\AppointmentResource;
 use App\Http\Resources\ClassResource;
 use App\Models\Appointment;
 use App\Models\Classes;
+use App\Models\Receipt;
 use App\Models\User;
 use App\Models\UserTransaction;
 use Carbon\Carbon;
@@ -193,6 +194,20 @@ class AppointmentController extends Controller
                     'updated_at' =>  date('Y-m-d H:i:s')
                 ]
             ]);
+
+            Receipt::insert([
+                [
+                    'sender_id' => $appointment->student_id,
+                    'sender_name' => $appointment->student->first_name . " " . $appointment->student->last_name,
+                    'receiver_id' => $appointment->mentor_id,
+                    'receiver_name' => $appointment->mentor->first_name . " " . $appointment->mentor->last_name,
+                    'amount' => $appointment->amount - $service_charge,
+                    'service_charge' => $service_charge,
+                    'created_at' =>  date('Y-m-d H:i:s'),
+                    'updated_at' =>  date('Y-m-d H:i:s')
+                ]
+            ]);
+
             $mentor->wallet = $new_mentor_balance;
             $mentor->save();
         } else if ($appointment->status == Constants::APPOINTMENT_APPROVED && $request->status == Constants::APPOINTMENT_FAILED) {

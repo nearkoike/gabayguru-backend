@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\ReceiptResource;
 use App\Http\Resources\UserResource;
+use App\Models\Receipt;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -27,6 +29,25 @@ class UserController extends Controller
         }
 
         return response()->json(['message' => 'Invalid email or password.'], Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function receipt_index()
+    {
+        $usersResource = ReceiptResource::collection(Receipt::with([
+            'sender',
+            'receiver'
+        ])->get());
+        return json_encode($usersResource, 200);
+    }
+
+
+    public function receipt_show($user_id)
+    {
+        $usersResource = ReceiptResource::collection(Receipt::with([
+            'sender',
+            'receiver'
+        ])->where('sender_id', $user_id)->orWhere('receiver_id', $user_id)->get());
+        return json_encode($usersResource, 200);
     }
 
     public function register(StoreUserRequest $request)

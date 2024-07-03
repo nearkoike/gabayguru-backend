@@ -11,15 +11,18 @@ class Appointment extends Model
 
     protected $guarded = [];
 
-    public function mentor() {
+    public function mentor()
+    {
         return $this->belongsTo(User::class, 'mentor_id');
     }
-    
-    public function student() {
+
+    public function student()
+    {
         return $this->belongsTo(User::class, 'student_id');
     }
 
-    public function class() {
+    public function class()
+    {
         return $this->hasOne(Classes::class);
     }
 }

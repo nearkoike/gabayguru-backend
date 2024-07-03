@@ -36,6 +36,9 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::post('/cache-appointment/{appointment_id}', [AppointmentController::class, 'cacheAppointment']); // get code
     Route::get('/get-cache-appointment', [AppointmentController::class, 'getCacheAppointment']); // get code
     Route::post('/google-meet', [ClassController::class, 'createMeeting']); // get code
+
+    Route::get('/receipts', [UserController::class, 'receipt_index']);
+    Route::get('/receipts/{user_id}', [UserController::class, 'receipt_show']);
 });
 
 Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function () {
