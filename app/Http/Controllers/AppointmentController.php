@@ -197,6 +197,7 @@ class AppointmentController extends Controller
 
             Receipt::insert([
                 [
+                    'appointment_id' => $appointment->id,
                     'sender_id' => $appointment->student_id,
                     'sender_name' => $appointment->student->first_name . " " . $appointment->student->last_name,
                     'receiver_id' => $appointment->mentor_id,

@@ -17,6 +17,7 @@ class ReceiptResource extends JsonResource
     {
         return [
             'id'                => $this->id,
+            'appointment_id'    => $this->appointment_id,
             'receiver'          => new UserResource($this->receiver),
             'receiver_name'     => $this->receiver_name,
             'sender'            => new UserResource($this->sender),

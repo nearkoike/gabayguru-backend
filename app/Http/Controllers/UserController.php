@@ -9,6 +9,7 @@ use App\Http\Resources\ReceiptResource;
 use App\Http\Resources\UserResource;
 use App\Models\Receipt;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -41,13 +42,23 @@ class UserController extends Controller
     }
 
 
-    public function receipt_show($user_id)
+    public function receipt_show(Request $request)
     {
-        $usersResource = ReceiptResource::collection(Receipt::with([
+
+        $userTransactionResource = ReceiptResource::collection(Receipt::with(
             'sender',
             'receiver'
-        ])->where('sender_id', $user_id)->orWhere('receiver_id', $user_id)->get());
-        return json_encode($usersResource, 200);
+        )->where(
+            function (Builder $query) use ($request) {
+                if ($request->has('user_id')) {
+                    $query->where('sender_id', $request->user_id)->orWhere('receiver_id', $request->user_id);
+                }
+                if ($request->has('appointment_id')) {
+                    $query->where('appointment_id', $request->appointment_id);
+                }
+            }
+        )->get());
+        return json_encode($userTransactionResource, 200);
     }
 
     public function register(StoreUserRequest $request)

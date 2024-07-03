@@ -38,7 +38,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::post('/google-meet', [ClassController::class, 'createMeeting']); // get code
 
     Route::get('/receipts', [UserController::class, 'receipt_index']);
-    Route::get('/receipts/{user_id}', [UserController::class, 'receipt_show']);
+    Route::post('/receipts', [UserController::class, 'receipt_show']);
 });
 
 Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function () {
