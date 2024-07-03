@@ -90,7 +90,7 @@ class User extends Authenticatable
     public function getReviewsAttribute()
     {
         $type = $this->role == 2 ? "mentor_id" : "student_id";
-        $appointmentIds = Appointment::where($type, $this->id)->whereIn('status', ['DONE', 'FAILED'])->pluck('id');
+        $appointmentIds = Appointment::where($type, $this->id)->pluck('id');
         $classIds = Classes::whereIn('appointment_id', $appointmentIds)->pluck('id');
 
         return Review::whereIn('class_id', $classIds)->get();

@@ -11,11 +11,13 @@ class Classes extends Model
     protected $guarded = [];
     protected $table = 'classes';
 
-    public function appointment() {
+    public function appointment()
+    {
         return $this->belongsTo(Appointment::class);
     }
-    
-    public function review() {
-        return $this->hasOne(Review::class);
+
+    public function review()
+    {
+        return $this->hasOne(Review::class, 'class_id');
     }
 }

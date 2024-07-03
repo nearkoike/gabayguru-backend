@@ -170,17 +170,19 @@ class AppointmentController extends Controller
         } else if ($appointment->status == Constants::APPOINTMENT_APPROVED && $request->status == Constants::APPOINTMENT_DONE) {
             // Continue Payment
             $mentor = User::find($appointment->mentor_id);
+            $service_charge = $appointment->amount * .1;
             $old_mentor_balance = $mentor->wallet;
-            $new_mentor_balance = $appointment->amount + $mentor->wallet;
+            $new_mentor_balance = ($appointment->amount - $service_charge) + $mentor->wallet;
 
             UserTransaction::insert([
                 [
                     'user_id' => $appointment->mentor_id,
-                    'amount' => $appointment->amount,
+                    'amount' => $appointment->amount - $service_charge,
+                    'service_charge' => $service_charge,
                     'description' => Constants::APPOINTMENT_DONE_MENTOR,
                     'old_balance' => $old_mentor_balance,
                     'new_balance' => $new_mentor_balance,
-                    'reference_number' => 'AUTO_DEDUCT_FROM_SYSTEM',
+                    'reference_number' => 'AUTO_INCREASE_FROM_SYSTEM',
                     'screenshot' => null,
                     'sender_name' => null,
                     'account_name' => null,
