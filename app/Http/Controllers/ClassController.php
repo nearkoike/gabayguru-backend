@@ -205,7 +205,7 @@ class ClassController extends Controller
 
             $appointment->status = Constants::APPOINTMENT_APPROVED;
             $appointment->save();
-            return Redirect::to("http://localhost:3000/session-request");
+            return Redirect::to("https://gabayguru-fe.vercel.app/session-request");
         } else {
             // Error handling if token retrieval fails
 
