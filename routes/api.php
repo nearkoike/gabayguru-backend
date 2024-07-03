@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->name('api.')->group(function () {
     Route::post('/login', [UserController::class, 'login'])->name('login');
     Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/verified', [UserController::class, 'verified']);
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::post('/register', [UserController::class, 'register'])->name('register');
     Route::get('/google-link', [ClassController::class, 'getGoogleLink'])->name('getGoogleLink');

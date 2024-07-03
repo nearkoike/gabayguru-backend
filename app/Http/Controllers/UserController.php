@@ -78,6 +78,21 @@ class UserController extends Controller
         return json_encode($usersResource, 200);
     }
 
+    public function verified()
+    {
+        $usersResource = UserResource::collection(User::with([
+            'support_tickets',
+            'student_tickets',
+            'schedules',
+            'transactions',
+            'student_appointments',
+            'mentor_appointments',
+            'penalties',
+            'user_bio'
+        ])->get());
+        return json_encode($usersResource, 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

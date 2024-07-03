@@ -16,8 +16,8 @@ class TicketController extends Controller
      */
     public function index()
     {
-        $ticketResource = TicketResource::collection(Ticket::with(['support','student'])->get());
-        return json_encode( $ticketResource, 200);
+        $ticketResource = TicketResource::collection(Ticket::with(['support', 'student'])->get());
+        return json_encode($ticketResource, 200);
     }
 
     /**
@@ -36,13 +36,13 @@ class TicketController extends Controller
         DB::beginTransaction();
         try {
             $ticket = Ticket::create($request->validated());
-            $ticketRelationship = Ticket::with(['support','student'])->find($ticket->id);
+            $ticketRelationship = Ticket::with(['support', 'student'])->find($ticket->id);
             $ticketResource = new TicketResource($ticketRelationship);
             DB::commit();
-            return json_encode( $ticketResource, 200);
+            return json_encode($ticketResource, 200);
         } catch (\Exception $e) {
             DB::rollback();
-            return json_encode( $e, 400);
+            return json_encode($e, 400);
         }
     }
 
@@ -69,11 +69,11 @@ class TicketController extends Controller
     {
         $ticket->fill($request->validated());
         $ticket->save();
-        
-        $ticketRelationship = Ticket::with(['support','student'])->find($ticket->id);
+
+        $ticketRelationship = Ticket::with(['support', 'student'])->find($ticket->id);
 
         $ticketRelationship = new TicketResource($ticketRelationship);
-        return json_encode( $ticketRelationship, 200);
+        return json_encode($ticketRelationship, 200);
     }
 
     /**

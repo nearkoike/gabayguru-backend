@@ -18,7 +18,7 @@ class TicketResource extends JsonResource
         return [
             'id'                => $this->id,
             'support'           => new UserResource($this->whenLoaded('support')),
-            'student'           => new UserResource($this->whenLoaded('student')),
+            'user'              => new UserResource($this->whenLoaded('student')),
             'message'           => $this->message,
             'response'          => $this->response,
             'created_at'        => (string) $this->created_at,

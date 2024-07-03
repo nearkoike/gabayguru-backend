@@ -17,7 +17,7 @@ class ReviewResource extends JsonResource
     {
         return [
             'id'                => $this->id,
-            'class'             => new ClassResource($this->whenLoaded('class')),
+            'class'             => new ClassResource($this->class),
             'feedback'          => $this->feedback,
             'rating'            => $this->rating,
             'created_at'        => (string) $this->created_at,
