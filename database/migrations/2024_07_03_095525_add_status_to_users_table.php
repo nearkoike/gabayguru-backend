@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('status')->default("PENDING")->after('role');
+            $table->string('status')->default("FOR_VERIFICATION")->after('role');
         });
     }
 
