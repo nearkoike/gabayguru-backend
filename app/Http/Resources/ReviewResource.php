@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Appointment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -15,9 +16,11 @@ class ReviewResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $appointment = Appointment::find($this->class->appointment_id);
         return [
             'id'                => $this->id,
             'class'             => new ClassResource($this->class),
+            'student_name'      => $appointment->student->first_name . ' ' . $appointment->student->last_name,
             'feedback'          => $this->feedback,
             'rating'            => $this->rating,
             'created_at'        => (string) $this->created_at,
