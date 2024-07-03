@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->name('api.')->group(function () {
     Route::post('/login', [UserController::class, 'login'])->name('login');
     Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/verified', [UserController::class, 'verified']);
+    Route::get('/users/sort/{status}', [UserController::class, 'verified']);
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::post('/register', [UserController::class, 'register'])->name('register');
     Route::get('/google-link', [ClassController::class, 'getGoogleLink'])->name('getGoogleLink');
@@ -43,6 +43,7 @@ Route::prefix('v1')->name('api.')->group(function () {
 });
 
 Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function () {
+    Route::resource('users', UserController::class)->except(['show', 'index']);
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     Route::post('/user-transactions/for-processing', [UserTransactionController::class, 'for_processing']);
     Route::post('/appointments/search-class/{appointment_id}', [AppointmentController::class, 'search_class']);
@@ -57,7 +58,6 @@ Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function ()
         'tickets' => TicketController::class,
         'penalties' => PenaltyController::class,
     ]);
-    Route::resource('users', UserController::class)->except(['show', 'index']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

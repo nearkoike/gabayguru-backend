@@ -111,7 +111,7 @@ class UserController extends Controller
         return json_encode($usersResource, 200);
     }
 
-    public function verified()
+    public function verified($status)
     {
         $usersResource = UserResource::collection(User::with([
             'support_tickets',
@@ -123,7 +123,7 @@ class UserController extends Controller
             'penalties',
             'user_bio',
             'payment_details'
-        ])->get());
+        ])->where('status', $status)->get());
         return json_encode($usersResource, 200);
     }
 

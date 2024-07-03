@@ -27,6 +27,7 @@ class UserResource extends JsonResource
             'date_of_birth'         => $this->date_of_birth,
             'profile_picture'       => $this->profile_picture,
             'role'                  => $this->role,
+            'status'                => $this->status,
             'rate'                  => $this->rate,
             'wallet'                => $this->wallet,
             'transactions'          => UserTransactionResource::collection($this->whenLoaded('transactions')),
