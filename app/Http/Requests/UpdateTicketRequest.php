@@ -26,6 +26,7 @@ class UpdateTicketRequest extends FormRequest
             'student_id'    => ['sometimes', 'exists:users,id'],
             'message'       => ['sometimes', 'string'],
             'response'      => ['nullable', 'string'],
+            'status'        => ['sometimes', 'string'],
         ];
     }
 }

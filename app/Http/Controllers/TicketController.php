@@ -20,6 +20,11 @@ class TicketController extends Controller
         return json_encode($ticketResource, 200);
     }
 
+    public function verified($status)
+    {
+        $ticketResource = TicketResource::collection(Ticket::with(['support', 'student'])->where('status', $status)->get());
+        return json_encode($ticketResource, 200);
+    }
     /**
      * Show the form for creating a new resource.
      */
