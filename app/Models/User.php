@@ -90,6 +90,11 @@ class User extends Authenticatable
         return $this->hasMany(Penalty::class);
     }
 
+    public function payment_details()
+    {
+        return $this->hasOne(UserPaymentDetail::class);
+    }
+
     public function getClassesAttribute()
     {
         $type = $this->role == 2 ? "mentor_id" : "student_id";

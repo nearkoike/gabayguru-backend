@@ -8,6 +8,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserBioController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPaymentDetailsController;
 use App\Http\Controllers\UserTransactionController;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
@@ -47,6 +48,7 @@ Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function ()
     Route::post('/appointments/search-class/{appointment_id}', [AppointmentController::class, 'search_class']);
     Route::resources([
         'user-transactions' => UserTransactionController::class,
+        'user-payment-details' => UserPaymentDetailsController::class,
         'user-bios' => UserBioController::class,
         'appointments' => AppointmentController::class,
         'schedules' => ScheduleController::class,

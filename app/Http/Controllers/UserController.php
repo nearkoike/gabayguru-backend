@@ -105,7 +105,8 @@ class UserController extends Controller
             'student_appointments',
             'mentor_appointments',
             'penalties',
-            'user_bio'
+            'user_bio',
+            'payment_details'
         ])->get());
         return json_encode($usersResource, 200);
     }
@@ -120,7 +121,8 @@ class UserController extends Controller
             'student_appointments',
             'mentor_appointments',
             'penalties',
-            'user_bio'
+            'user_bio',
+            'payment_details'
         ])->get());
         return json_encode($usersResource, 200);
     }
@@ -178,7 +180,8 @@ class UserController extends Controller
             'student_appointments',
             'mentor_appointments',
             'penalties',
-            'user_bio'
+            'user_bio',
+            'payment_details'
         ])->find($user->id);
 
         $userResource = new UserResource($userRelationship);
