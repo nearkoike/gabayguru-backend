@@ -16,6 +16,10 @@ class UserTransactionResource extends JsonResource
     public function toArray(Request $request): array
     {
 
+        $url = $this->screenshot;
+        $local = array("http://127.0.0.1:8000");
+        $live   = array("https://e852-87-200-204-249.ngrok-free.app");
+        $screenshot = str_replace($local, $live, $url);
         return [
             'id'                => $this->id,
             'user'              => new UserResource($this->whenLoaded('user')),
@@ -25,7 +29,7 @@ class UserTransactionResource extends JsonResource
             'old_balance'       => $this->old_balance,
             'new_balance'       => $this->new_balance,
             'reference_number'  => $this->reference_number,
-            'screenshot'        => $this->screenshot,
+            'screenshot'        => $screenshot,
             'sender_name'       => $this->sender_name,
             'account_name'      => $this->account_name,
             'account_number'    => $this->account_number,

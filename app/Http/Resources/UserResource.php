@@ -17,6 +17,10 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         $type = $this->role == 2 ? "mentor_id" : "student_id";
+        $url = $this->profile_picture;
+        $local = array("http://127.0.0.1:8000");
+        $live   = array("https://e852-87-200-204-249.ngrok-free.app");
+        $profile_picture = str_replace($local, $live, $url);
         return [
             'id'                    => $this->id,
             'first_name'            => $this->first_name,
@@ -25,7 +29,7 @@ class UserResource extends JsonResource
             'email'                 => $this->email,
             'contact_number'        => $this->contact_number,
             'date_of_birth'         => $this->date_of_birth,
-            'profile_picture'       => $this->profile_picture,
+            'profile_picture'       => $profile_picture,
             'role'                  => $this->role,
             'status'                => $this->status,
             'rate'                  => $this->rate,
