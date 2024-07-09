@@ -18,7 +18,7 @@ class UserTransactionResource extends JsonResource
 
         $url = $this->screenshot;
         $local = array("http://127.0.0.1:8000");
-        $live   = array("https://6942-112-209-212-53.ngrok-free.app");
+        $live   = array("https://df16-2001-4451-1bc-5200-e4ef-faef-2296-3076.ngrok-free.app");
         $screenshot = str_replace($local, $live, $url);
         return [
             'id'                => $this->id,
